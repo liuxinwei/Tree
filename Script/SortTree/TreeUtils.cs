@@ -62,7 +62,6 @@ namespace DS.BLL
         {
             if (bsTree != null)
             {
-                Debug.Log(bsTree.Data.ToString() + "  " + bsTree.index + "   " + bsTree.layer);
                 LDR(bsTree.Left);
                 LDR(bsTree.Right);
             }
@@ -151,16 +150,13 @@ namespace DS.BLL
             if (_bsTree.Left != null)
             {
                 _bsTree.Left.layer = _bsTree.layer + 1;
-                Debug.LogWarning(_bsTree.Left.layer + "  " + _maxLayer);
                 _maxLayer = Mathf.Max(_maxLayer, _bsTree.Left.layer);
                 ResetLayer(_bsTree.Left, ref _maxLayer);
             }
             if (_bsTree.Right != null)
             {
                 _bsTree.Right.layer = _bsTree.layer + 1;
-                Debug.LogWarning(_bsTree.Right.layer + "  " + _maxLayer);
                 _maxLayer = Mathf.Max(_maxLayer, _bsTree.Right.layer);
-                Debug.LogWarning(_maxLayer);
                 ResetLayer(_bsTree.Right, ref _maxLayer);
             }
         }
@@ -205,25 +201,38 @@ namespace DS.BLL
     public class BSTree
     {
         public int Data;
-
         public BSTree Left;
-
         public BSTree Right;
-
         public int layer;
-
         public int index;
+        public Vector2 point;
+        public static int nodeSize = 40;
+        public static float wRatio = 100;
+        public static float hRatio = 100;
 
-        public void ShowGUI(int _maxCount)
+        public void CalculatePosition(int _maxLayer)
         {
+            int _maxCount = (int)Mathf.Pow(2, _maxLayer - 1);
             int rowCount = (int)Mathf.Pow(2, layer - 1);
             int nextRountCount = (int)Mathf.Pow(2, layer);
-            float startX = _maxCount * 50f / nextRountCount;
+            float curNodeSize = nodeSize * wRatio / 100;
+            float startX = _maxCount * curNodeSize / nextRountCount;
+            int curindex = GetRowIndex();
+            int count = (int)Mathf.Pow(2, _maxLayer - layer);
+            float startW = (Screen.width - _maxCount * curNodeSize) / 2;
+            point.x = startX + curindex * (count * curNodeSize);
+            point.y = layer * nodeSize * 2 * hRatio/100;
+            point.x = point.x + startW;
+        }
 
-            int curindex = index  - (int)Mathf.Pow(2, Mathf.Max(0, layer - 1)) - 1;
-            Debug.Log(curindex + "  " + (int)Mathf.Pow(2, layer - 1));
-            Debug.Log(index + "  startX  " + startX + "  layer  " + layer + "  rowCount  " + rowCount + "  nextRountCount  " + nextRountCount + "  _maxCount  " + _maxCount + " index " + curindex);
-            GUI.Button(new Rect(startX - 25 + curindex * 50, (layer + 1) * 50 + 80 - 25f, 50, 50), Data.ToString());
+        public int GetRowIndex()
+        {
+            if(layer == 1)
+            {
+                return 0;
+            }
+            int curindex = index - ((int)Mathf.Pow(2, layer - 1) - 1) - 1;
+            return curindex;
         }
     }
 }
