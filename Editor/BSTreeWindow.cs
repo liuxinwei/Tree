@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class BSTreeWindow : EditorWindow
 {
-    TreeNode root;
+    TreeNodeGUI root;
     int value;
     int maxLayer;
     int delvalue = -1;
@@ -15,8 +15,8 @@ public class BSTreeWindow : EditorWindow
         GUILayout.BeginHorizontal();
         GUILayout.EndHorizontal();
 
-        TreeNode.wRatio = EditorGUILayout.FloatField("wRatio", TreeNode.wRatio);
-        TreeNode.hRatio = EditorGUILayout.FloatField("hRatio", TreeNode.hRatio);
+        TreeNodeGUI.wRatio = EditorGUILayout.FloatField("wRatio", TreeNodeGUI.wRatio);
+        TreeNodeGUI.hRatio = EditorGUILayout.FloatField("hRatio", TreeNodeGUI.hRatio);
         EditorGUILayout.BeginHorizontal();
         value = EditorGUILayout.IntField("Value", value);
         if(GUILayout.Button("Add Node"))
@@ -26,7 +26,7 @@ public class BSTreeWindow : EditorWindow
             {
                 if (root == null)
                 {
-                    root = new TreeNode();
+                    root = new TreeNodeGUI();
                     root.data = list[i];
                     root.layer = 1;
                     root.index = 1;
@@ -34,9 +34,9 @@ public class BSTreeWindow : EditorWindow
                 else
                 {
                     maxLayer = 0;
-                    BinaryTree.Insert(root, list[i]);
-                    BinaryTree.ResetIndex(root);
-                    BinaryTree.ResetLayer(root, ref maxLayer);
+                    BinaryTreeGUI.Insert(root, list[i]);
+                    BinaryTreeGUI.ResetIndex(root);
+                    BinaryTreeGUI.ResetLayer(root, ref maxLayer);
                 }
             }
         }
@@ -46,12 +46,12 @@ public class BSTreeWindow : EditorWindow
         value = EditorGUILayout.IntField("Value", value);
         if (GUILayout.Button("Del Node"))
         {
-            BinaryTree.Delete(ref root, value);
+            BinaryTreeGUI.Delete(ref root, value);
             maxLayer = 0;
             root.index = 1;
             root.layer = 1;
-            BinaryTree.ResetIndex(root);
-            BinaryTree.ResetLayer(root, ref maxLayer);
+            BinaryTreeGUI.ResetIndex(root);
+            BinaryTreeGUI.ResetLayer(root, ref maxLayer);
         }
         EditorGUILayout.EndHorizontal();
 
@@ -60,7 +60,7 @@ public class BSTreeWindow : EditorWindow
         DrawNode(root);
     }
 
-    void CalculatePosition(TreeNode _root)
+    void CalculatePosition(TreeNodeGUI _root)
     {
         if(_root == null)
         {
@@ -71,7 +71,7 @@ public class BSTreeWindow : EditorWindow
         CalculatePosition(_root.rightNode);
     }
 
-    void DrawNode(TreeNode _tree)
+    void DrawNode(TreeNodeGUI _tree)
     {
         if (_tree == null)
         {
@@ -92,7 +92,7 @@ public class BSTreeWindow : EditorWindow
         DrawNode(_tree.rightNode);
     }
 
-    void DrawLine(TreeNode _tree)
+    void DrawLine(TreeNodeGUI _tree)
     {
         if (_tree == null)
         {

@@ -12,6 +12,7 @@ public class MainInspector : Editor
         {
             List<int> list = new List<int> { 50, 30, 70, 10, 40, 90, 80 };
             BSTree bsTree = BSTreeBLL.Create(list);
+            BinaryTree<string> k = new BinaryTree<string>();
         }
     }
 }

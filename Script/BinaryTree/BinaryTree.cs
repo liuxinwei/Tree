@@ -1,67 +1,92 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BinaryTree : MonoBehaviour 
+public class BinaryTree<T> where T : System.IComparable
 {
-    public static void Insert(TreeNode _root, int key)
-    {
-        if(_root == null)
-        {
-            return;
-        }
-        if (key > _root.data)
-        {
-            if (_root.rightNode == null)
-            {
-                _root.rightNode = new TreeNode();
-                _root.rightNode.data = key;
-            }
-            else
-            {
-                Insert(_root.rightNode, key);
-            }
-        }
-        else if(key < _root.data)
-        {
-            if (_root.leftNode == null)
-            {
-                _root.leftNode = new TreeNode();
-                _root.leftNode.data = key;
-            }
-            else
-            {
-                Insert(_root.leftNode, key);
-            }
-        }
-    }
+    private TreeNode<T> root;
 
-    public static TreeNode Search(TreeNode _root, int _key)
+    public void Insert(T _data)
     {
-        if (_root == null)
+        if (root == null)
         {
-            return null;
-        }
-        if (_root.data == _key)
-        {
-            return _root;
-        }
-        if (_root.data < _key)
-        {
-            return Search(_root.rightNode, _key);
+            root = new TreeNode<T>();
+            root.data = _data;
         }
         else
         {
-            return Search(_root.rightNode, _key);
+            Insert(root, _data);
         }
     }
 
-    public static void Delete(ref TreeNode _root, int _key)
+    private void Insert(TreeNode<T> _root, T _data)
+    {
+        if(root == null)
+        {
+            return;
+        }
+        if(_data.CompareTo(root.data) == 1)
+        {
+            if (_root.rightNode == null)
+            {
+                _root.rightNode = new TreeNode<T>();
+                _root.rightNode.data = _data;
+            }
+            else
+            {
+                Insert(_root.rightNode, _data);
+            }
+        }
+        else if (_data.CompareTo(root.data) == -1)
+        {
+            if (_root.leftNode == null)
+            {
+                _root.leftNode = new TreeNode<T>();
+                _root.leftNode.data = _data;
+            }
+            else
+            {
+                Insert(_root.leftNode, _data);
+            }
+        }
+    }
+
+    public bool Search(T _data)
+    {
+        return Search(root, _data);
+    }
+
+    private bool Search(TreeNode<T> _root, T _data)
+    {
+        if(_root == null)
+        {
+            return false;
+        }
+        if (_data.CompareTo(_root.data) == 0)
+        {
+            return true;
+        }
+        if (_data.CompareTo(_root.data) == 1)
+        {
+            return Search(_root.rightNode, _data);
+        }
+        else
+        {
+            return Search(_root.leftNode, _data);
+        }
+    }
+
+    public void Delete(T _data)
+    {
+        Delete(ref root, _data);
+    }
+
+    private void Delete(ref TreeNode<T> _root, T _data)
     {
         if (_root == null)
         {
             return;
         }
-        if (_root.data == _key)
+        if (_data.CompareTo(_root.data) == 0)
         {
             if (_root.rightNode == null && _root.leftNode == null)
             {
@@ -77,8 +102,8 @@ public class BinaryTree : MonoBehaviour
             }
             else
             {
-                TreeNode parentNode = _root.leftNode;
-                TreeNode curNode = _root.leftNode;
+                TreeNode<T> parentNode = _root.leftNode;
+                TreeNode<T> curNode = _root.leftNode;
                 while (curNode != null)
                 {
                     if (curNode.rightNode == null)
@@ -103,61 +128,13 @@ public class BinaryTree : MonoBehaviour
             }
             return;
         }
-        if (_root.data < _key)
+        if (_data.CompareTo(_root.data) == 1)
         {
-            Delete(ref _root.rightNode, _key);
+            Delete(ref _root.rightNode, _data);
         }
-        else
+        else if (_data.CompareTo(_root.data) == -1)
         {
-            Delete(ref _root.leftNode, _key);
+            Delete(ref _root.leftNode, _data);
         }
-    }
-
-    public static void ResetIndex(TreeNode _bsTree)
-    {
-        if (_bsTree == null)
-        {
-            return;
-        }
-        if (_bsTree.leftNode != null)
-        {
-            _bsTree.leftNode.index = _bsTree.index * 2;
-            ResetIndex(_bsTree.leftNode);
-        }
-        if (_bsTree.rightNode != null)
-        {
-            _bsTree.rightNode.index = _bsTree.index * 2 + 1;
-            ResetIndex(_bsTree.rightNode);
-        }
-    }
-
-    public static void ResetLayer(TreeNode _bsTree, ref int _maxLayer)
-    {
-        if (_bsTree == null)
-        {
-            return;
-        }
-        if (_bsTree.leftNode != null)
-        {
-            _bsTree.leftNode.layer = _bsTree.layer + 1;
-            _maxLayer = Mathf.Max(_maxLayer, _bsTree.leftNode.layer);
-            ResetLayer(_bsTree.leftNode, ref _maxLayer);
-        }
-        if (_bsTree.rightNode != null)
-        {
-            _bsTree.rightNode.layer = _bsTree.layer + 1;
-            _maxLayer = Mathf.Max(_maxLayer, _bsTree.rightNode.layer);
-            ResetLayer(_bsTree.rightNode, ref _maxLayer);
-        }
-    }
-
-    public static void DLR(TreeNode _bsTree)
-    {
-        if (_bsTree == null)
-        {
-            return;
-        }
-        DLR(_bsTree.leftNode);
-        DLR(_bsTree.rightNode);
     }
 }
